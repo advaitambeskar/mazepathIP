@@ -1,42 +1,50 @@
-#Python Project for the sem 6 mini project
+"""
+This is the docstring of the module trial1.py
+This module is designed to perform pre-processes to the image,
+return the list of co-ordinates on which the robot has to traverse
+to go from the start point to the end point of the maze.
+This module uses numpy, openCV and various other ready-made modules for processing
+"""
 import numpy as np
 import cv2
 import time
 from skimage.morphology import *
+import preprocessing as process
 
-def preprocess(img):        
-        '''
-        This function will process the passed image and return the skeleton of the image.
-        The function consists of 1 parameter
-        '''
-        blur = cv2.blur(img,(5,5))      #Blurring the Image Done.
-        ret,thres_img = cv2.threshold(blur,127,255,cv2.THRESH_BINARY)   #Threshold image is saved in thres_img
 
-        mid = medial_axis(thres_img).astype(np.uint8)        #Perform Skeletonization of the threshold image, using Medial Axis Theorem
-        ret,mid = cv2.threshold(mid,0,255,cv2.THRESH_BINARY)
+def prune(skel, start, end, width,height):
+                current_start_pos = []
+                current_start_pos.append(start[0])
+                current_start_pos.append(start[1])
+                startx = current_start_pos[0]
+                starty = current_start_pos[1]
+                endx = end[0]
+                endy = end[1]
+                print current_start_pos
+                mask_matrix = np.array([[0,255,0],[255,255,255]])
+                #Declare the background array as numpy array
+                #multiply the two arrays and store its result
+                #check conditions on the result array
+                #Continue the entire code until no neighbouring white found
+                #when no neighbour is white, check if your current position is end position, if yes, then stay there.
+                #otherwise, just go back to the link place.
+                
+                    
 
-        return mid
-
-        #OUTPUT STAGES
-        
-        #prun = pruning(final2,length,height)
-        #prun2= final2-prun2
-        #Step 7: Display and Check Accuracy of the Detected Path
-        #cv2.imshow("orig",img)
-        #cv2.imshow("blur", blur)
-        #cv2.imshow("thres_img",thres_img)
-        #cv2.imshow("final skel using median axis", final2)
-        #cv2.waitKey(0)
-        #cv2.destroyAllWindows()
-        #Display Complete.
-
-        
 j = 0
 time1=[]
-while j<20:
+img = cv2.imread("flex-small2.jpg",0)   #Load the image in a grayscale format
+while j<10:
         start_time = time.time()
-        img = cv2.imread("flex-small3.jpg",0)   #Load the image in a grayscale format
-        skeleton = preprocess(img)
+        skeleton = process.preprocess(img)
+        #print skeleton
+        height, width = img.shape[:2]
+        print height, width #height is y axis. width is x axis
+        startpoint,endpoint = process.find_start_end(skeleton, width, height)
+        print startpoint, endpoint
+        #process.display_out(skeleton,"medial")
+        #listOfCoOrd =
+        prune(skeleton, startpoint, endpoint, width, height)
         time1.append(time.time()-start_time)        
         print(" --%s seconds-- " %(time1[j]))
         j = j+1
